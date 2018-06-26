@@ -11,7 +11,7 @@ const long double PI = acos(-1);
 
 void FFT(std::vector<std::complex<long double>> &P, int inv = 1) {
     static std::vector<std::complex<long double>> roots;
-    for(int i = 1, j = 0; i < P.size(); ++ i) {
+    for(size_t i = 1, j = 0; i < P.size(); ++ i) {
         int b = P.size() >> 1;
         while(j >= b) {
             j -= b;
@@ -25,14 +25,14 @@ void FFT(std::vector<std::complex<long double>> &P, int inv = 1) {
     if(roots.size() != P.size() / 2) {
         roots.clear();
         roots.reserve(P.size());
-        for(int i=0; i < P.size() / 2; ++ i)
+        for(size_t i=0; i < P.size() / 2; ++ i)
             roots[i] = std::complex<long double> (cos(theta * i), sin(theta * i));
     }
 
-    for(int i = 2; i <= P.size(); i <<= 1) {
+    for(size_t i = 2; i <= P.size(); i <<= 1) {
         int layer = P.size() / i;
-        for(int j = 0; j < P.size(); j += i) {
-            for(int k = 0; k < i / 2; ++ k) {
+        for(size_t j = 0; j < P.size(); j += i) {
+            for(size_t k = 0; k < i / 2; ++ k) {
                 auto u = P[j + k];
                 auto v = P[j + k + i / 2] * roots[layer * k];
                 P[j + k] = u + v;
