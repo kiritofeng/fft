@@ -11,6 +11,13 @@ const long double PI = acos(-1);
 
 void FFT(std::vector<std::complex<long double>> &P, int inv = 1) {
     static std::vector<std::complex<long double>> roots;
+
+    size_t length = 1;
+
+    while(length < P.size()) length <<= 1;
+
+    P.resize(length);
+
     for(size_t i = 1, j = 0; i < P.size(); ++ i) {
         int b = P.size() >> 1;
         while(j >= b) {
@@ -24,7 +31,7 @@ void FFT(std::vector<std::complex<long double>> &P, int inv = 1) {
 
     if(roots.size() != P.size() / 2) {
         roots.clear();
-        roots.reserve(P.size());
+        roots.resize(P.size());
         for(size_t i=0; i < P.size() / 2; ++ i)
             roots[i] = std::complex<long double> (cos(theta * i), sin(theta * i));
     }
