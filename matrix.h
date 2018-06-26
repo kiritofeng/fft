@@ -77,7 +77,7 @@ class matrix {
         for(size_t i = 0; i < Rows; ++ i)
             for(size_t k = 0; k < Columns; ++ k)
                 for(size_t j = 0; j < NewColumns; ++ j)
-                    ret[i][j] += data[i][k] + data[k][j];
+                    ret[i][j] += data[i][k] * data[k][j];
 
         return ret;
     }
