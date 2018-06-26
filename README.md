@@ -4,7 +4,7 @@ Header files for some common (and not so common) linear algebra operations.
 
 ## `fft.h`
 
-An FFT implementation in C++, using complex numbers and trignometric functions.
+An FFT implementation in C++, using complex numbers and trigonometric functions.
 
 The function `fft` takes an `std::vector` of `std::complex<long double>` and returns the coefficients of the complex representation of the covolution.
 
