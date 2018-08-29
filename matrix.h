@@ -194,7 +194,7 @@ class matrix {
     */
 
     template<size_t NewColumns>
-    inline matrix<Rows, NewColumns, T> operator * (const matrix<Columns, NewColumns, T> & m) const {
+    inline matrix<Rows, NewColumns, T> operator * (matrix<Columns, NewColumns, T> & m) const {
         matrix<Rows, Columns, T> ret;
 
         // The unusual order of loops is an optimization
@@ -298,6 +298,32 @@ class matrix {
 
     inline T* operator [] (size_t row) {
         return data[row];
+    }
+
+    /**
+        Checks if two matricies are not equal to each other.
+
+        @param m the matrix to compare to.
+        @returns true if the two are not equal, and false otherwise.
+    */
+
+    inline bool operator != (matrix<Rows, Columns, T> &m) {
+        for(size_t i = 0; i < Rows; ++ i)
+            for(size_t j = 0; j < Columns, ++ j)
+                if(data[i][j] != m[i][j])
+                    return true;
+        return false;
+    }
+
+    /**
+        Checks if two matricies are equal to each other.
+
+        @param m the matrix to compare to.
+        @returns true if the two are equal, and false otherwise.
+    */
+
+    inline bool operator == (matrix<Rows, Columns, T> &m) {
+        return !((*this) != m);
     }
 };
 

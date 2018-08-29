@@ -1,4 +1,4 @@
-# physics_h
+# physics\_h
 
 Header files for some common (and not so common) linear algebra operations.
 
