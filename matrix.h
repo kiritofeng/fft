@@ -35,8 +35,6 @@ class degenerate_matrix_error : public std::exception {
 /**
     matrix class, for representation and manipulation of matrices
 
-    @param Rows the number of rows in the matrix.
-    @param Colums the number of columns in the matrix.
     @param T the data type being stored in the matrix.
 */
 
@@ -51,6 +49,9 @@ class matrix {
 
     /**
         Default matrix constructor. All entries are set to their default.
+
+        @param Rows the number of rows in the matrix.
+        @param Columns the number of columns in the matrix.
     */
 
     inline matrix (size_t Rows, size_t Columns) {
@@ -63,6 +64,8 @@ class matrix {
     /**
         Alternate matrix constructor. All entries are set to t.
 
+        @param Rows the number of rows in the matrix.
+        @param Columns the number of columns in the matrix.
         @param t the value to set all entries equal to.
     */
 
@@ -201,7 +204,6 @@ class matrix {
     /**
         Multiplies two matricies together and returns their result.
 
-        @param NewColumns the number of columns in the resultant matrix.
         @param m the matrix to multiply by.
         @returns the result of multiplying the two matrices.
     */
@@ -216,7 +218,7 @@ class matrix {
         for(size_t i = 0; i < rows(); ++ i)
             for(size_t k = 0; k < columns(); ++ k)
                 for(size_t j = 0; j < m.columns(); ++ j)
-                    ret[i][j] += data[i][k] * data[k][j];
+                    ret(i,j) += data[i][k] * data[k][j];
 
         return ret;
     }
