@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include <exception>
 #include <iostream>
+#include <vector>
 
 /**
     degenerate_matrix_error class, thrown whenever one tries to invert a degenerate matrix
@@ -39,12 +40,12 @@ class degenerate_matrix_error : public std::exception {
     @param T the data type being stored in the matrix.
 */
 
-template <size_t Rows, size_t Columns, typename T = int>
+template <typename T = int>
 class matrix {
 
     private:
 
-    T data[Rows][Columns];
+    std::vector<std::vector<T>> data;
 
     public:
 
@@ -52,7 +53,12 @@ class matrix {
         Default matrix constructor. All entries are set to their default.
     */
 
-    inline matrix () {}
+    inline matrix (size_t Rows, size_t Columns) {
+        data.reserve(Rows);
+        for(size_t i = 0; i < Rows; ++ i) {
+            data[i].reserve(Columns);
+        }
+    }
 
     /**
         Alternate matrix constructor. All entries are set to t.
@@ -60,11 +66,10 @@ class matrix {
         @param t the value to set all entries equal to.
     */
 
-    inline matrix (T t) {
+    inline matrix (size_t Rows, size_t Columns, T t) {
+        data.reserve(Rows);
         for(size_t i = 0; i < Rows; ++ i) {
-            for(size_t j = 0;j < Columns; ++ j) {
-                data[i][j] = t;
-            }
+            data[i] = std::vector<T>(Columns, t);
         }
     }
 
@@ -74,26 +79,25 @@ class matrix {
         @param m the matrix to copy.
     */
         
-    inline matrix (const matrix<Rows, Columns, T> &m) {
-        for(size_t i = 0; i < Rows; ++ i) {
-            for(size_t j = 0; j < Columns; ++ j) {
-                data[i][j] = m[i][j];
+    inline matrix (const matrix<T> &m) {
+        data.reserve(m.Rows());
+        for(size_t i = 0; i < m.rows(); ++ i) {
+            for(size_t j = 0; j < m.columns(); ++ j) {
+                data[i].push_back(m(i,j));
             }
         }
     }
 
     /**
-        Returns the identity matrix of size Rows x Columns.
+        Returns the identity matrix of size N x N.
 
-        @returns a Rows x Columns identity matrix, if such a matrix is valid.
+        @returns a N x N identity matrix, if such a matrix is valid.
     */
 
-    static inline matrix<Rows, Columns, T> identity() {
-        static_assert(Rows == Columns, "The identiy matrix is a square matrix.");
+    static inline matrix<T> identity(size_t N) {
+        matrix<T>ret = matrix(N,N);
 
-        matrix<Rows, Columns, T>ret;
-
-        for(size_t i = 0; i < Rows; ++ i)
+        for(size_t i = 0; i < N; ++ i)
             ret[i][i] = 1;
 
         return ret;
@@ -106,7 +110,10 @@ class matrix {
     */
 
     inline size_t rows() {
-        return Rows;
+        if(data.empty()) {
+            return 0;
+        }
+        return data.size();
     }
 
 
@@ -117,22 +124,27 @@ class matrix {
     */
 
     inline size_t columns() {
-        return Columns;
+        if(data.empty()) {
+            return 0;
+        }
+        return data[0].size();
     }
 
 
     /**
-        Adds two Rows x Columns matrices together and returns their result
+        Adds two matrices together and returns their result
 
         @param m the matrix to add.
         @returns the sum of the two matrices.
     */
 
-    inline matrix<Rows, Columns, T> operator + (const matrix<Rows, Columns, T> &m) const {
-        matrix<Rows, Columns, T> ret;
+    inline matrix<T> operator + (const matrix<T> &m) const {
+        static_assert(rows() == m.rows() && columns() == m.columns(), "Cannot add matrices of different sizes!");
 
-        for(size_t i = 0; i < Rows; ++ i) {
-            for(size_t j = 0; j < Columns; ++ j) {
+        matrix<T> ret;
+
+        for(size_t i = 0; i < rows(); ++ i) {
+            for(size_t j = 0; j < columns(); ++ j) {
                 ret[i][j] = data[i][j] + m[i][j];
             }
         }
@@ -146,12 +158,12 @@ class matrix {
         @returns the matrix scaled by -1.
     */
 
-    inline matrix<Rows, Columns, T> operator - () const {
-        matrix<Rows, Columns, T> ret;
+    inline matrix<T> operator - () const {
+        matrix<T> ret;
 
-        for(size_t i = 0; i < Rows; ++ i) {
-            for(size_t j = 0; j < Columns; ++ j) {
-                ret[i][j] = -data[i][j];
+        for(size_t i = 0; i < rows(); ++ i) {
+            for(size_t j = 0; j < columns(); ++ j) {
+                ret(i,j) = -data[i][j];
             }
         }
 
@@ -159,13 +171,13 @@ class matrix {
     }
 
     /**
-        Subtracts two Rows x Columns matrices and returns their result.
+        Subtracts two matrices and returns their result.
 
         @param m the matrix to subtract.
         @returns the difference of the two matricies.
     */
 
-    inline matrix<Rows, Columns, T> operator - (const matrix<Rows, Columns, T> &m) const {
+    inline matrix<T> operator - (const matrix<T> &m) const {
         return (*this) + -m;
     }
 
@@ -176,12 +188,12 @@ class matrix {
         @returns the matrix scaled by t.
     */
 
-    inline matrix<Rows, Columns, T> operator * (const T t) const {
-        matrix<Rows, Columns, T> ret(*this);
+    inline matrix<T> operator * (const T t) const {
+        matrix<T> ret(*this);
 
-        for(size_t i = 0; i < Rows; ++ i)
-            for(size_t j = 0; j < Columns; ++ j)
-                ret[i][j] = ret[i][j] * t;
+        for(size_t i = 0; i < rows(); ++ i)
+            for(size_t j = 0; j < columns(); ++ j)
+                ret(i,j) = ret(i,j) * t;
 
         return ret;
     }
@@ -194,15 +206,16 @@ class matrix {
         @returns the result of multiplying the two matrices.
     */
 
-    template<size_t NewColumns>
-    inline matrix<Rows, NewColumns, T> operator * (matrix<Columns, NewColumns, T> & m) const {
-        matrix<Rows, Columns, T> ret;
+    inline matrix<T> operator * (matrix<T> & m) const {
+        static_assert(columns() == m.rows(), "Cannot mulitply matricies!");
+
+        matrix<T> ret = matrix(rows(), m.columns());
 
         // The unusual order of loops is an optimization
 
-        for(size_t i = 0; i < Rows; ++ i)
-            for(size_t k = 0; k < Columns; ++ k)
-                for(size_t j = 0; j < NewColumns; ++ j)
+        for(size_t i = 0; i < rows(); ++ i)
+            for(size_t k = 0; k < columns(); ++ k)
+                for(size_t j = 0; j < m.columns(); ++ j)
                     ret[i][j] += data[i][k] * data[k][j];
 
         return ret;
@@ -217,30 +230,30 @@ class matrix {
     */
 
     template<typename T1 = long double>
-    inline matrix<Rows, Columns, T1> inverse() const {
-        static_assert(Rows == Columns, "You can't find the inverse of a non-square matrix!");
+    inline matrix<T1> inverse() const {
+        static_assert(rows() == columns(), "You can't find the inverse of a non-square matrix!");
 
-        matrix<Rows, Columns, T1> tmp = matrix(*this);
-        matrix<Rows, Columns, T1> ret = matrix<Rows, Columns, T1>::identity();
+        matrix<T1> tmp = matrix(*this);
+        matrix<T1> ret = matrix<T1>::identity(rows());
 
         // This is where the fun starts...
 
-        for(size_t i = 0, j; i < Rows; ++ i) {
-            for(j = i; j < Rows && tmp[j][i] != T1(0); ++ j);
-            if(j == Rows) {
+        for(size_t i = 0, j; i < rows(); ++ i) {
+            for(j = i; j < rows() && tmp(j,i) != T1(0); ++ j);
+            if(j == rows()) {
                 throw degenerate_matrix_error();
             }
             if(i != j) {
-                for(size_t k = i; k < Columns; ++ k) {
-                    std::swap(tmp[i][k], tmp[j][k]);
-                    std::swap(ret[i][k], ret[j][k]);
+                for(size_t k = i; k < columns(); ++ k) {
+                    std::swap(tmp(i,k), tmp(j,k));
+                    std::swap(ret(i,k), ret(j,k));
                 }
             }
-            for(j = i + 1; j < Rows; ++ j) {
-                T1 entry1 = tmp[j][i], entry2 = ret[j][i];
-                for(size_t k = i; k < Columns; ++k) {
-                    tmp[j][k] = tmp[j][k] - (tmp[i][k] / tmp[i][i]) * entry1;
-                    ret[j][k] = ret[j][k] - (ret[i][k] / ret[i][i]) * entry2;
+            for(j = i + 1; j < rows(); ++ j) {
+                T1 entry1 = tmp(j,i), entry2 = ret(j,i);
+                for(size_t k = i; k < columns(); ++k) {
+                    tmp(j,k) = tmp[j][k] - (tmp(i,k) / tmp(i,i)) * entry1;
+                    ret(j,k) = ret[j][k] - (ret(i,k) / ret(i,i)) * entry2;
                 }
             }
         }
@@ -257,35 +270,35 @@ class matrix {
 
     template<typename T1 = long double>
     inline T1 determinant() const {
-        static_assert(Rows == Columns, "You can't find the determinant of a non-square matrix!");
+        static_assert(rows() == columns(), "You can't find the determinant of a non-square matrix!");
 
-        matrix<Rows, Columns, T1> tmp = matrix(*this);
+        matrix<T1> tmp = matrix(*this);
 
         T1 res = T1(1);
 
         bool b = 0;
 
-        for(size_t i = 0, j; i < Rows - 1; ++ i) {
-            for(j = i; j < Rows && tmp[j][i] != T1(0); ++ j);
-            if(j == Rows) {
+        for(size_t i = 0, j; i < rows() - 1; ++ i) {
+            for(j = i; j < rows() && tmp(j,i) != T1(0); ++ j);
+            if(j == rows()) {
                 return T1(0);
             }
             if(i != j) {
-                for(size_t k = i; k < Columns; ++ k) {
-                    std::swap(tmp[i][k], tmp[j][k]);
+                for(size_t k = i; k < columns(); ++ k) {
+                    std::swap(tmp(i,k), tmp(j,k));
                 }
                 b ^= 1;
             }
-            for(j = i + 1; j < Rows; ++ j) {
-                T entry = tmp[j][i];
-                for(size_t k = i; k < Columns; ++ k) {
-                    tmp[j][k] = tmp[j][k] - (tmp[i][k] / tmp[i][i]) * entry;
+            for(j = i + 1; j < rows(); ++ j) {
+                T entry = tmp(j,i);
+                for(size_t k = i; k < columns(); ++ k) {
+                    tmp(j,k) = tmp(j,k) - (tmp(i,k) / tmp(i,i)) * entry;
                 }
             }
         }
 
-        for(size_t i = 0; i < Rows; ++ i)
-            res = res * tmp[i][i];
+        for(size_t i = 0; i < rows(); ++ i)
+            res = res * tmp(i,i);
 
         return b ? -res : res;
     }
@@ -293,12 +306,25 @@ class matrix {
     /**
         Allows access to the matrix entries.
 
-        @param row the row of the matrix to return.
-        @returns a pointer coressponding the the `row`-th row of the matrix.
+        @param row the row the entry is in.
+        @param column the column the entry is in.
+        @returns a reference coressponding the the [row][column]-th element of the matrix.
     */
 
-    inline T* operator [] (size_t row) {
-        return data[row];
+    inline T &operator () (size_t row, size_t column) {
+        return data[row][column];
+    }
+
+    /**
+        Allows access to the matrix entries.
+
+        @param row the row the entry is in.
+        @param column the column the entry is in.
+        @returns a cosnt_reference coressponding the the [row][column]-th element of the matrix.
+    */
+
+    inline const T &operator () (size_t row, size_t column) const {
+        return data[row][column];
     }
 
     /**
@@ -308,9 +334,10 @@ class matrix {
         @returns true if the two are not equal, and false otherwise.
     */
 
-    inline bool operator != (matrix<Rows, Columns, T> &m) {
-        for(size_t i = 0; i < Rows; ++ i)
-            for(size_t j = 0; j < Columns; ++ j)
+    inline bool operator != (matrix<T> &m) {
+        if(rows() != m.rows() || columns() != m.columns()) return true;
+        for(size_t i = 0; i < rows(); ++ i)
+            for(size_t j = 0; j < columns(); ++ j)
                 if(data[i][j] != m[i][j])
                     return true;
         return false;
@@ -323,7 +350,7 @@ class matrix {
         @returns true if the two are equal, and false otherwise.
     */
 
-    inline bool operator == (matrix<Rows, Columns, T> &m) {
+    inline bool operator == (matrix<T> &m) {
         return !((*this) != m);
     }
 };
@@ -336,12 +363,12 @@ class matrix {
     @returns out.
 */
 
-template<size_t Rows, size_t Columns, typename T>
-std::ostream& operator <<(std::ostream &out, matrix<Rows, Columns, T> &m){
-    for(size_t i = 0; i < Rows; ++ i){
-        for(size_t j = 1; j < Columns; ++ j) {
+template <typename T>
+std::ostream& operator <<(std::ostream &out, matrix<T> &m){
+    for(size_t i = 0; i < m.rows(); ++ i){
+        for(size_t j = 1; j < m.columns(); ++ j) {
             out << m[i][j];
-            if(j == Columns - 1){
+            if(j == m.columns() - 1){
                 out << " ";
             }
         }
