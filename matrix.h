@@ -83,7 +83,7 @@ class matrix {
     */
         
     inline matrix (const matrix<T> &m) {
-        data.reserve(m.Rows());
+        data.reserve(m.rows());
         for(size_t i = 0; i < m.rows(); ++ i) {
             for(size_t j = 0; j < m.columns(); ++ j) {
                 data[i].push_back(m(i,j));
@@ -112,7 +112,7 @@ class matrix {
         @returns the number of rows in the matrix.
     */
 
-    inline size_t rows() {
+    inline size_t rows() const {
         if(data.empty()) {
             return 0;
         }
@@ -126,7 +126,7 @@ class matrix {
         @returns the number of columns in the matrix.
     */
 
-    inline size_t columns() {
+    inline size_t columns() const {
         if(data.empty()) {
             return 0;
         }
@@ -385,7 +385,7 @@ template <typename T>
 std::ostream& operator <<(std::ostream &out, matrix<T> &m){
     for(size_t i = 0; i < m.rows(); ++ i){
         for(size_t j = 1; j < m.columns(); ++ j) {
-            out << m[i][j];
+            out << m(i,j);
             if(j == m.columns() - 1){
                 out << " ";
             }
