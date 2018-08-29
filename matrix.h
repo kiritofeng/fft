@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <exception>
+#include <iostream>
 
 /**
     degenerate_matrix_error class, thrown whenever one tries to invert a degenerate matrix
@@ -309,7 +310,7 @@ class matrix {
 
     inline bool operator != (matrix<Rows, Columns, T> &m) {
         for(size_t i = 0; i < Rows; ++ i)
-            for(size_t j = 0; j < Columns, ++ j)
+            for(size_t j = 0; j < Columns; ++ j)
                 if(data[i][j] != m[i][j])
                     return true;
         return false;
@@ -326,5 +327,27 @@ class matrix {
         return !((*this) != m);
     }
 };
+
+/**
+    Override to print a matrix with an std::ostream.
+
+    @param out the ostream to print on.
+    @param m the matrix to print.
+    @returns out.
+*/
+
+template<size_t Rows, size_t Columns, typename T>
+std::ostream& operator <<(std::ostream &out, matrix<Rows, Columns, T> &m){
+    for(size_t i = 0; i < Rows; ++ i){
+        for(size_t j = 1; j < Columns; ++ j) {
+            out << m[i][j];
+            if(j == Columns - 1){
+                out << " ";
+            }
+        }
+        out << "\n";
+    }
+    return out;
+}
 
 #endif
