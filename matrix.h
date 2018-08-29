@@ -56,9 +56,8 @@ class matrix {
     */
 
     inline matrix (size_t Rows, size_t Columns) {
-        data.reserve(Rows);
         for(size_t i = 0; i < Rows; ++ i) {
-            data[i].reserve(Columns);
+            data.push_back(std::vector<T>(Columns, T()));
         }
     }
 
@@ -71,9 +70,8 @@ class matrix {
     */
 
     inline matrix (size_t Rows, size_t Columns, T t) {
-        data.reserve(Rows);
         for(size_t i = 0; i < Rows; ++ i) {
-            data[i] = std::vector<T>(Columns, t);
+            data.emplace_back(Columns, t);
         }
     }
 
@@ -84,8 +82,8 @@ class matrix {
     */
         
     inline matrix (const matrix<T> &m) {
-        data.reserve(m.rows());
         for(size_t i = 0; i < m.rows(); ++ i) {
+            data.push_back(std::vector<T>());
             for(size_t j = 0; j < m.columns(); ++ j) {
                 data[i].push_back(m(i,j));
             }
@@ -99,7 +97,7 @@ class matrix {
     */
 
     static inline matrix<T> identity(size_t N) {
-        matrix<T>ret = matrix(N,N);
+        matrix<T>ret = matrix(N, N, T(0));
 
         for(size_t i = 0; i < N; ++ i)
             ret(i,i) = 1;
@@ -209,17 +207,20 @@ class matrix {
         @returns the result of multiplying the two matrices.
     */
 
-    inline matrix<T> operator * (matrix<T> & m) const {
+    inline matrix<T> operator * (const matrix<T> & m) const {
         assert(columns() == m.rows());
 
-        matrix<T> ret = matrix(rows(), m.columns());
+        matrix<T> ret = matrix(rows(), m.columns(), T(0));
 
         // The unusual order of loops is an optimization
 
-        for(size_t i = 0; i < rows(); ++ i)
-            for(size_t k = 0; k < columns(); ++ k)
-                for(size_t j = 0; j < m.columns(); ++ j)
-                    ret(i,j) += data[i][k] * data[k][j];
+        for(size_t i = 0; i < rows(); ++ i) {
+            for(size_t k = 0; k < columns(); ++ k) {
+                for(size_t j = 0; j < m.columns(); ++ j) {
+                    ret(i,j) = ret(i, j) + data[i][k] * m(k,j);
+                }
+            }
+        }
 
         return ret;
     }
@@ -242,7 +243,7 @@ class matrix {
         // This is where the fun starts...
 
         for(size_t i = 0, j; i < rows(); ++ i) {
-            for(j = i; j < rows() && tmp(j,i) != T1(0); ++ j);
+            for(j = i; j < rows() && tmp(j,i) == T1(0); ++ j);
             if(j == rows()) {
                 throw degenerate_matrix_error();
             }
@@ -252,11 +253,19 @@ class matrix {
                     std::swap(ret(i,k), ret(j,k));
                 }
             }
-            for(j = i + 1; j < rows(); ++ j) {
-                T1 entry1 = tmp(j,i), entry2 = ret(j,i);
-                for(size_t k = i; k < columns(); ++k) {
-                    tmp(j,k) = tmp(j,k) - (tmp(i,k) / tmp(i,i)) * entry1;
-                    ret(j,k) = ret(j,k) - (ret(i,k) / ret(i,i)) * entry2;
+            for(int j = 0; j < columns(); ++ j) {
+                if(j == i) continue;
+                tmp(i,j) = tmp(i,j) / tmp(i,i);
+                ret(i,j) = ret(i,j) / tmp(i,i);
+            }
+            ret(i,i) = ret(i,i) / tmp(i,i);
+            tmp(i,i) = 1.0;
+            for(j = 0; j < rows(); ++ j) {
+                if(j == i) continue;
+                T1 entry = tmp(j,i);
+                for(size_t k = 0; k < columns(); ++k) {
+                    tmp(j,k) = tmp(j,k) - (tmp(i,k) / tmp(i,i)) * entry;
+                    ret(j,k) = ret(j,k) - (ret(i,k) / tmp(i,i)) * entry;
                 }
             }
         }
@@ -282,7 +291,7 @@ class matrix {
         bool b = 0;
 
         for(size_t i = 0, j; i < rows() - 1; ++ i) {
-            for(j = i; j < rows() && tmp(j,i) != T1(0); ++ j);
+            for(j = i; j < rows() && tmp(j,i) == T1(0); ++ j);
             if(j == rows()) {
                 return T1(0);
             }
@@ -337,7 +346,7 @@ class matrix {
         @returns true if the two are not equal, and false otherwise.
     */
 
-    inline bool operator != (matrix<T> &m) {
+    inline bool operator != (const matrix<T> &m) const {
         if(rows() != m.rows() || columns() != m.columns()) return true;
         for(size_t i = 0; i < rows(); ++ i)
             for(size_t j = 0; j < columns(); ++ j)
@@ -353,7 +362,7 @@ class matrix {
         @returns true if the two are equal, and false otherwise.
     */
 
-    inline bool operator == (matrix<T> &m) {
+    inline bool operator == (const matrix<T> &m) const {
         return !((*this) != m);
     }
 
