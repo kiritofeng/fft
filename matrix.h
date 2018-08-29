@@ -355,6 +355,22 @@ class matrix {
     inline bool operator == (matrix<T> &m) {
         return !((*this) != m);
     }
+
+    /**
+        Computes the transpose of the matrix.
+
+        @returns the transposed matrix.
+    */
+
+    inline matrix transpose() const {
+        matrix ret = matrix(columns(), rows());
+
+        for(size_t i = 0; i < rows(); ++ i)
+            for(size_t j = 0; j < columns(); ++ j)
+                ret(j,i) = data[i][j];
+
+        return ret;
+    }
 };
 
 /**
