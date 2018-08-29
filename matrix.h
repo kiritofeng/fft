@@ -102,7 +102,7 @@ class matrix {
         matrix<T>ret = matrix(N,N);
 
         for(size_t i = 0; i < N; ++ i)
-            ret[i][i] = 1;
+            ret(i,i) = 1;
 
         return ret;
     }
@@ -143,7 +143,7 @@ class matrix {
     */
 
     inline matrix<T> operator + (const matrix<T> &m) const {
-        assert(rows() == m.rows() && columns() == m.columns(), "Cannot add matrices of different sizes!");
+        assert(rows() == m.rows() && columns() == m.columns());
 
         matrix<T> ret;
 
@@ -210,7 +210,7 @@ class matrix {
     */
 
     inline matrix<T> operator * (matrix<T> & m) const {
-        assert(columns() == m.rows(), "Cannot mulitply matricies!");
+        assert(columns() == m.rows());
 
         matrix<T> ret = matrix(rows(), m.columns());
 
@@ -234,7 +234,7 @@ class matrix {
 
     template<typename T1 = long double>
     inline matrix<T1> inverse() const {
-        assert(rows() == columns(), "You can't find the inverse of a non-square matrix!");
+        assert(rows() == columns());
 
         matrix<T1> tmp = matrix(*this);
         matrix<T1> ret = matrix<T1>::identity(rows());
@@ -273,7 +273,7 @@ class matrix {
 
     template<typename T1 = long double>
     inline T1 determinant() const {
-        assert(rows() == columns(), "You can't find the determinant of a non-square matrix!");
+        assert(rows() == columns());
 
         matrix<T1> tmp = matrix(*this);
 
