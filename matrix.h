@@ -209,7 +209,7 @@ class matrix {
     */
 
     inline matrix<T> operator * (matrix<T> & m) const {
-        static_assert(columns() == m.rows(), "Cannot mulitply matricies!");
+        assert(columns() == m.rows(), "Cannot mulitply matricies!");
 
         matrix<T> ret = matrix(rows(), m.columns());
 
@@ -254,8 +254,8 @@ class matrix {
             for(j = i + 1; j < rows(); ++ j) {
                 T1 entry1 = tmp(j,i), entry2 = ret(j,i);
                 for(size_t k = i; k < columns(); ++k) {
-                    tmp(j,k) = tmp[j][k] - (tmp(i,k) / tmp(i,i)) * entry1;
-                    ret(j,k) = ret[j][k] - (ret(i,k) / ret(i,i)) * entry2;
+                    tmp(j,k) = tmp(j,k) - (tmp(i,k) / tmp(i,i)) * entry1;
+                    ret(j,k) = ret(j,k) - (ret(i,k) / ret(i,i)) * entry2;
                 }
             }
         }
