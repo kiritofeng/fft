@@ -383,11 +383,11 @@ class matrix {
 */
 
 template <typename T>
-std::ostream& operator <<(std::ostream &out, matrix<T> &m){
+std::ostream& operator <<(std::ostream &out, const matrix<T> &m){
     for(size_t i = 0; i < m.rows(); ++ i){
         for(size_t j = 0; j < m.columns(); ++ j) {
             out << m(i,j);
-            if(j == m.columns() - 1){
+            if(j < m.columns() - 1){
                 out << " ";
             }
         }
