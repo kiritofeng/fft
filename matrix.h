@@ -385,7 +385,7 @@ class matrix {
 template <typename T>
 std::ostream& operator <<(std::ostream &out, matrix<T> &m){
     for(size_t i = 0; i < m.rows(); ++ i){
-        for(size_t j = 1; j < m.columns(); ++ j) {
+        for(size_t j = 0; j < m.columns(); ++ j) {
             out << m(i,j);
             if(j == m.columns() - 1){
                 out << " ";
