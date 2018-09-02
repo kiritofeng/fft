@@ -230,7 +230,7 @@ class matrix {
 
         @param T1 the data type of the inverted matrix.
         @returns the inverse matrix.
-        @throws degernate_matrix_error if the matrix is degenerate
+        @throws degenernate_matrix_error if the matrix is degenerate
     */
 
     template<typename T1 = long double>
