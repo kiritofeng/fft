@@ -12,5 +12,6 @@
 
 #include "fft.h"
 #include "matrix.h"
+#include "vector.h"
 
 #endif

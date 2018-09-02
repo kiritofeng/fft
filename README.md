@@ -19,7 +19,18 @@ Contains a matrix class, which defines:
 - Multiplication
 - Inverse
 - Determinant
+- Transpose
 
 ## `gauss.h`
 
 Solves a systems of linear equations.
+
+## `vector.h`
+
+Contains a vector class, which defines:
+
+- Addition
+- Subtraction
+- Mulitplication
+- Cross Product
+- Dot Product
