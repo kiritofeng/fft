@@ -38,6 +38,10 @@ class vector {
         inline T magnitude() const {
             return (*this) * (*this);
         }
+
+        inline vector<T> normalize() const {
+            return (*this) * sqrt(1/magnitude());
+        }
 };
 
 #endif
