@@ -31,6 +31,8 @@ Contains a vector class, which defines:
 
 - Addition
 - Subtraction
-- Mulitplication
+- Multiplication (by a constant)
 - Cross Product
 - Dot Product
+- Magnitude
+- Normalization
