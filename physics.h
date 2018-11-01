@@ -1,10 +1,10 @@
 /**
-    physics.h
-    Purpose: includes all headers, allowing for simplier imports
-
-    @author Kirito Feng
-    @version 1.0
-*/
+ *  physics.h
+ *  Purpose: includes all headers, allowing for simplier imports
+ *
+ *  @author Kirito Feng
+ *  @version 1.1
+ */
 
 #ifndef PHYSICS_H
 

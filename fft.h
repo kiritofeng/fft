@@ -1,3 +1,11 @@
+/**
+ * fft.h
+ * Purpose: FFT library
+ *
+ * @author Kirito Feng
+ * @version 1.0
+ */
+
 #ifndef FFT_H
 
 #define FFT_H
@@ -7,7 +15,12 @@
 #include <complex>
 #include <vector>
 
-const long double PI = acos(-1);
+/**
+ * An iterative implementation of the Fast Fourier Transform.
+ *
+ * @param P an std::vector of std::complex<long double> representing the values to compute the FFT of. Note that this vector will be overwritten with the values returned by the FFT.
+ * @param inv pass 1 to compute the Fast Fourier Transform, and -1 to compute the inverse Fast Fourier Transform.
+ */
 
 void FFT(std::vector<std::complex<long double>> &P, int inv = 1) {
     static std::vector<std::complex<long double>> roots;
@@ -27,7 +40,7 @@ void FFT(std::vector<std::complex<long double>> &P, int inv = 1) {
         if(i < j) std::swap(P[i], P[j]);
     }
 
-    long double theta = inv * 2 * PI / P.size();
+    long double theta = inv * 2 * M_PI / P.size();
 
     if(roots.size() != P.size() / 2) {
         roots.clear();

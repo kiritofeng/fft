@@ -1,10 +1,10 @@
 /**
-    gauss.h
-    Purpose: Solves a system of simulatenous linear equations
-
-    @author Kirito Feng
-    @version 1.0
-*/
+ *  gauss.h
+ *  Purpose: Solves a system of simultaneous linear equations
+ *
+ *  @author Kirito Feng
+ *  @version 1.0
+ */
 
 #ifndef GAUSS_H
 
@@ -13,12 +13,12 @@
 #include "matrix.h"
 
 /**
-    Preforms Gaussian elimination to solve a system of linear equations.
-
-    @param A the matrix representing the linear equations
-    @param Y the column vector representing the resultant.
-    @returns an std::vector representing the values
-*/
+ *  Preforms Gaussian elimination to solve a system of linear equations.
+ *
+ *  @param A the matrix representing the linear equations
+ *  @param Y the column vector representing the resultant.
+ *  @return an std::vector representing the values
+ */
 template<typename T>
 std::vector<T> gauss(std::vector<std::vector<T>> A, std::vector<T> Y) {
     assert(A.size() == Y.size());

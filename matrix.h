@@ -1,17 +1,17 @@
 /**
-    matrix.h
-    Purpose: general matrix operations
-
-    @author Kirito Feng
-    @version 1.0
-*/
+ *  matrix.h
+ *  Purpose: general matrix operations
+ *
+ *  @author Kirito Feng
+ *  @version 1.0
+ */
 
 #ifndef MATRIX_H
 
 #define MATRIX_H
 
 // I feel bad for including a whole header just for std::swap
-// But it's far more efficent in most use cases than what I'd write myself...
+// But it's far more efficient in most use cases than what I'd write myself...
 
 #include <algorithm>
 #include <cassert>
@@ -21,8 +21,8 @@
 #include <vector>
 
 /**
-    degenerate_matrix_error class, thrown whenever one tries to invert a degenerate matrix
-*/
+ *  degenerate_matrix_error class, thrown whenever one tries to invert a degenerate matrix
+ */
 
 class degenerate_matrix_error : public std::exception {
 
@@ -34,10 +34,10 @@ class degenerate_matrix_error : public std::exception {
 };
 
 /**
-    matrix class, for representation and manipulation of matrices
-
-    @param T the data type being stored in the matrix.
-*/
+ *  matrix class, for representation and manipulation of matrices
+ *
+ *  @param T the data type being stored in the matrix.
+ */
 
 template <typename T = int>
 class matrix {
@@ -49,11 +49,11 @@ class matrix {
     public:
 
     /**
-        Default matrix constructor. All entries are set to their default.
-
-        @param Rows the number of rows in the matrix.
-        @param Columns the number of columns in the matrix.
-    */
+     *  Default matrix constructor. All entries are set to their default.
+     *
+     *  @param Rows the number of rows in the matrix.
+     *  @param Columns the number of columns in the matrix.
+     */
 
     inline matrix (size_t Rows, size_t Columns) {
         for(size_t i = 0; i < Rows; ++ i) {
@@ -62,12 +62,12 @@ class matrix {
     }
 
     /**
-        Alternate matrix constructor. All entries are set to t.
-
-        @param Rows the number of rows in the matrix.
-        @param Columns the number of columns in the matrix.
-        @param t the value to set all entries equal to.
-    */
+     *  Alternate matrix constructor. All entries are set to t.
+     *
+     *  @param Rows the number of rows in the matrix.
+     *  @param Columns the number of columns in the matrix.
+     *  @param t the value to set all entries equal to.
+     */
 
     inline matrix (size_t Rows, size_t Columns, T t) {
         for(size_t i = 0; i < Rows; ++ i) {
@@ -76,10 +76,10 @@ class matrix {
     }
 
     /**
-        Copy constructor.
-
-        @param m the matrix to copy.
-    */
+     *  Copy constructor.
+     *
+     *  @param m the matrix to copy.
+     */
         
     inline matrix (const matrix<T> &m) {
         for(size_t i = 0; i < m.rows(); ++ i) {
@@ -91,10 +91,10 @@ class matrix {
     }
 
     /**
-        Returns the identity matrix of size N x N.
-
-        @returns a N x N identity matrix, if such a matrix is valid.
-    */
+     *  Returns the identity matrix of size N x N.
+     *
+     *  @return a N x N identity matrix, if such a matrix is valid.
+     */
 
     static inline matrix<T> identity(size_t N) {
         matrix<T>ret = matrix(N, N, T(0));
@@ -106,10 +106,10 @@ class matrix {
     }
 
     /**
-        Retrives the number of rows in the matrix.
-
-        @returns the number of rows in the matrix.
-    */
+     *  Retrieves the number of rows in the matrix.
+     *
+     *  @return the number of rows in the matrix.
+     */
 
     inline size_t rows() const {
         if(data.empty()) {
@@ -120,10 +120,10 @@ class matrix {
 
 
     /**
-        Retrives the number of columns in the matrix.
-
-        @returns the number of columns in the matrix.
-    */
+     *  Retrieves the number of columns in the matrix.
+     *
+     *  @return the number of columns in the matrix.
+     */
 
     inline size_t columns() const {
         if(data.empty()) {
@@ -134,11 +134,11 @@ class matrix {
 
 
     /**
-        Adds two matrices together and returns their result
-
-        @param m the matrix to add.
-        @returns the sum of the two matrices.
-    */
+     *  Adds two matrices together and returns their result
+     *
+     *  @param m the matrix to add.
+     *  @return the sum of the two matrices.
+     */
 
     inline matrix<T> operator + (const matrix<T> &m) const {
         assert(rows() == m.rows() && columns() == m.columns());
@@ -155,10 +155,10 @@ class matrix {
     }
 
     /**
-        Negates all entries in the matrix.
-
-        @returns the matrix scaled by -1.
-    */
+     *  Negates all entries in the matrix.
+     *
+     *  @return the matrix scaled by -1.
+     */
 
     inline matrix<T> operator - () const {
         matrix<T> ret;
@@ -173,22 +173,22 @@ class matrix {
     }
 
     /**
-        Subtracts two matrices and returns their result.
-
-        @param m the matrix to subtract.
-        @returns the difference of the two matricies.
-    */
+     *  Subtracts two matrices and returns their result.
+     *
+     *  @param m the matrix to subtract.
+     *  @return the difference of the two matrices.
+     */
 
     inline matrix<T> operator - (const matrix<T> &m) const {
         return (*this) + -m;
     }
 
     /**
-        Scales a matrix by a constant factor.
-
-        @param t the constant to scale the matrix by.
-        @returns the matrix scaled by t.
-    */
+     *  Scales a matrix by a constant factor.
+     *
+     *  @param t the constant to scale the matrix by.
+     *  @return the matrix scaled by t.
+     */
 
     inline matrix<T> operator * (const T t) const {
         matrix<T> ret(*this);
@@ -201,11 +201,11 @@ class matrix {
     }
 
     /**
-        Multiplies two matricies together and returns their result.
-
-        @param m the matrix to multiply by.
-        @returns the result of multiplying the two matrices.
-    */
+     *  Multiplies two matrices together and returns their result.
+     *
+     *  @param m the matrix to multiply by.
+     *  @return the result of multiplying the two matrices.
+     */
 
     inline matrix<T> operator * (const matrix<T> & m) const {
         assert(columns() == m.rows());
@@ -226,12 +226,12 @@ class matrix {
     }
 
     /**
-        Computes the inverse of the matrix.
-
-        @param T1 the data type of the inverted matrix.
-        @returns the inverse matrix.
-        @throws degenernate_matrix_error if the matrix is degenerate
-    */
+     *  Computes the inverse of the matrix.
+     *
+     *  @param T1 the data type of the inverted matrix.
+     *  @return the inverse matrix.
+     *  @throws degenernate_matrix_error if the matrix is degenerate
+     */
 
     template<typename T1 = long double>
     inline matrix<T1> inverse() const {
@@ -274,11 +274,11 @@ class matrix {
     }
 
     /**
-        Computes the matrix determinant.
-
-        @param T1 the data type of the determinant.
-        @returns the determinant.
-    */
+     *  Computes the matrix determinant.
+     *
+     *  @param T1 the data type of the determinant.
+     *  @return the determinant.
+     */
 
     template<typename T1 = long double>
     inline T1 determinant() const {
@@ -316,35 +316,35 @@ class matrix {
     }
 
     /**
-        Allows access to the matrix entries.
-
-        @param row the row the entry is in.
-        @param column the column the entry is in.
-        @returns a reference coressponding the the [row][column]-th element of the matrix.
-    */
+     *  Allows access to the matrix entries.
+     *
+     *  @param row the row the entry is in.
+     *  @param column the column the entry is in.
+     *  @return a reference corresponding the the [row][column]-th element of the matrix.
+     */
 
     inline T &operator () (size_t row, size_t column) {
         return data[row][column];
     }
 
     /**
-        Allows access to the matrix entries.
-
-        @param row the row the entry is in.
-        @param column the column the entry is in.
-        @returns a cosnt_reference coressponding the the [row][column]-th element of the matrix.
-    */
+     *  Allows access to the matrix entries.
+     *  
+     *  @param row the row the entry is in.
+     *  @param column the column the entry is in.
+     *  @return a const_reference corresponding to the [row][column]-th element of the matrix.
+     */
 
     inline const T &operator () (size_t row, size_t column) const {
         return data[row][column];
     }
 
     /**
-        Checks if two matricies are not equal to each other.
-
-        @param m the matrix to compare to.
-        @returns true if the two are not equal, and false otherwise.
-    */
+     *  Checks if two matrices are not equal to each other.
+     *
+     *  @param m the matrix to compare to.
+     *  @return true if the two are not equal, and false otherwise.
+     */
 
     inline bool operator != (const matrix<T> &m) const {
         if(rows() != m.rows() || columns() != m.columns()) return true;
@@ -356,10 +356,10 @@ class matrix {
     }
 
     /**
-        Checks if two matricies are equal to each other.
-
-        @param m the matrix to compare to.
-        @returns true if the two are equal, and false otherwise.
+     *  Checks if two matrices are equal to each other.
+     *
+     *  @param m the matrix to compare to.
+     *  @return true if the two are equal, and false otherwise.
     */
 
     inline bool operator == (const matrix<T> &m) const {
@@ -367,10 +367,10 @@ class matrix {
     }
 
     /**
-        Computes the transpose of the matrix.
-
-        @returns the transposed matrix.
-    */
+     *  Computes the transpose of the matrix.
+     *
+     *  @return the transposed matrix.
+     */
 
     inline matrix transpose() const {
         matrix ret = matrix(columns(), rows());
@@ -384,12 +384,12 @@ class matrix {
 };
 
 /**
-    Override to print a matrix with an std::ostream.
-
-    @param out the ostream to print on.
-    @param m the matrix to print.
-    @returns out.
-*/
+ *  Override to print a matrix with an std::ostream.
+ *
+ *  @param out the ostream to print on.
+ *  @param m the matrix to print.
+ *  @return out.
+ */
 
 template <typename T>
 std::ostream& operator <<(std::ostream &out, const matrix<T> &m){
