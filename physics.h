@@ -13,6 +13,7 @@
 #include "fft.h"
 #include "gauss.h"
 #include "matrix.h"
+#include "rot.h"
 #include "vector.h"
 
 #endif
